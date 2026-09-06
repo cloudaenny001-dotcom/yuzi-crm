@@ -75,10 +75,10 @@ const AUTH_STYLES = `
   .auth-proof { display: flex; align-items: center; gap: 10px; color: #9296af; font-size: 12px; font-weight: 600; }
   .proof-line { width: 40px; height: 1px; background: #ffbf67; }
   .auth-panel { position: relative; z-index: 2; display: grid; place-items: center; padding: 26px; background: linear-gradient(145deg, rgba(255,255,255,.1), rgba(255,255,255,.035)); backdrop-filter: blur(18px); }
-  .auth-card { width: min(100%, 400px); padding: 33px; border: 1px solid rgba(255,255,255,.17); border-radius: 26px; background: rgba(24,27,51,.67); box-shadow: 0 28px 70px rgba(0,0,0,.31); animation: auth-in .65s cubic-bezier(.2,.8,.2,1) both; }
+  .auth-card { width: 80%; padding: 5%; border: 1px solid rgba(255,255,255,.17); border-radius: 26px; background: rgba(24,27,51,.67); box-shadow: 0 28px 70px rgba(0,0,0,.31); animation: auth-in .65s cubic-bezier(.2,.8,.2,1) both; }
   .auth-card-title { margin: 13px 0 7px; font: 700 25px Space Grotesk, sans-serif; letter-spacing: -.05em; }
   .auth-field-label { display: block; color: #b4b7cc; font-size: 11.5px; font-weight: 700; margin: 16px 0 6px; }
-  .auth-input { width: 100%; color: #fff; background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.13); padding: 12px 13px; border-radius: 11px; outline: none; font: 13.5px Manrope, sans-serif; }
+  .auth-input { box-sizing: border-box; width: 100%; color: #fff; background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.13); padding: 12px 13px; border-radius: 11px; outline: none; font: 13.5px Manrope, sans-serif; }
   .auth-input:focus { border-color: #ffc56c; box-shadow: 0 0 0 4px rgba(255,197,108,.12); }
   .auth-input::placeholder { color: #8589a1; }
   .auth-submit { width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 8px; margin-top: 22px; padding: 12px; border: 0; border-radius: 11px; color: #282033; cursor: pointer; font: 800 13px Manrope, sans-serif; background: linear-gradient(100deg, #ffd16d, #ee935d); box-shadow: 0 12px 25px rgba(235,147,75,.24); }
