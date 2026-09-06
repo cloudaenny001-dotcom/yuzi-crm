@@ -168,25 +168,17 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [notice, setNotice] = useState("");
   const [submitting, setSubmitting] = useState(false);
-  const [mode, setMode] = useState("signin"); // signin | signup
 
   async function handleSubmit(e) {
     e.preventDefault();
     if (submitting) return;
     setError("");
-    setNotice("");
     setSubmitting(true);
     try {
-      // Call methods directly: this keeps the Supabase auth client context intact.
-      const result = mode === "signin"
-        ? await supabase.auth.signInWithPassword({ email: email.trim(), password })
-        : await supabase.auth.signUp({ email: email.trim(), password });
+      const result = await supabase.auth.signInWithPassword({ email: email.trim(), password });
       if (result.error) {
         setError(result.error.message);
-      } else if (mode === "signup" && !result.data.session) {
-        setNotice("Account created. Please confirm the email sent to you, then log in.");
       }
     } catch (err) {
       setError(err?.message || "Login failed. Please check your internet connection and try again.");
@@ -211,19 +203,15 @@ function Login() {
       <section className="auth-panel">
         <form className="auth-card" onSubmit={handleSubmit}>
           <div className="auth-kicker"><Sparkles size={14} fill="currentColor" /> Studio access</div>
-          <h2 className="auth-card-title">{mode === "signin" ? "Welcome back." : "Create your space."}</h2>
-          <div style={{ color: "#aeb1c5", fontSize: 13, lineHeight: 1.5 }}>{mode === "signin" ? "Sign in to continue shaping great work." : "Join the team behind the next big idea."}</div>
+          <h2 className="auth-card-title">Welcome back.</h2>
+          <div style={{ color: "#aeb1c5", fontSize: 13, lineHeight: 1.5 }}>Sign in to continue shaping great work.</div>
           <label className="auth-field-label" htmlFor="login-email">Email address</label>
           <input id="login-email" className="auth-input" required type="email" autoComplete="email" placeholder="you@company.com" value={email} onChange={e => setEmail(e.target.value)} />
           <label className="auth-field-label" htmlFor="login-password">Password</label>
-          <input id="login-password" className="auth-input" required type="password" autoComplete={mode === "signin" ? "current-password" : "new-password"} placeholder="Enter your password" value={password} onChange={e => setPassword(e.target.value)} />
+          <input id="login-password" className="auth-input" required type="password" autoComplete="current-password" placeholder="Enter your password" value={password} onChange={e => setPassword(e.target.value)} />
           {error && <div role="alert" style={{ color: "#ff9c95", fontSize: 12.5, marginTop: 13, lineHeight: 1.45 }}>{error}</div>}
-          {notice && <div style={{ color: "#82e0be", fontSize: 12.5, marginTop: 13, lineHeight: 1.45 }}>{notice}</div>}
           <button className="auth-submit" type="submit" disabled={submitting} style={{ opacity: submitting ? .7 : 1, cursor: submitting ? "wait" : "pointer" }}>
-            {submitting ? "Opening your workspace..." : mode === "signin" ? "Enter creative workspace" : "Create account"} {!submitting && <ArrowRight size={16} />}
-          </button>
-          <button className="auth-switch" type="button" disabled={submitting} onClick={() => { setMode(mode === "signin" ? "signup" : "signin"); setError(""); setNotice(""); }}>
-            {mode === "signin" ? <>New to Yuzi? <span>Create an account</span></> : <>Already have access? <span>Log in</span></>}
+            {submitting ? "Opening your workspace..." : "Enter creative workspace"} {!submitting && <ArrowRight size={16} />}
           </button>
           <div className="auth-secure">Secure workspace access · Yuzi Marketing Media</div>
         </form>
