@@ -4,7 +4,8 @@ import {
   LayoutDashboard, Users, Briefcase, KanbanSquare, CalendarDays,
   CheckCircle2, UsersRound, BarChart3, Plus, X, AlertTriangle,
   ChevronDown, Search, Paperclip, MessageSquare, ArrowRight, Flame,
-  ThumbsUp, ThumbsDown, RotateCcw, Building2, Plane, Check, LogOut
+  ThumbsUp, ThumbsDown, RotateCcw, Building2, Plane, Check, LogOut,
+  Sparkles, Bell, ArrowUpRight
 } from "lucide-react";
 
 /* ---------------------------------------------------------
@@ -16,6 +17,37 @@ const C = {
   tealSoft: "#DCEDE8", red: "#C1483C", redSoft: "#F5DEDB", slate: "#6B7280", slateSoft: "#EDECE7",
 };
 const FONT = `@import url('https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');`;
+const APP_STYLES = `
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #f2f3f8; }
+  button, input, select, textarea { transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease; }
+  button:not(:disabled):hover { transform: translateY(-1px); }
+  .agency-shell { min-height: 100vh; background: radial-gradient(circle at 87% 8%, rgba(211, 120, 255, .16), transparent 21rem), radial-gradient(circle at 56% 84%, rgba(73, 199, 179, .15), transparent 25rem), #f4f5fa; }
+  .agency-sidebar { position: sticky; top: 0; height: 100vh; background: linear-gradient(160deg, #111525 0%, #1c1533 52%, #0e2330 100%); box-shadow: 14px 0 42px rgba(18, 20, 35, .15); overflow-y: auto; }
+  .agency-brand-mark { box-shadow: 0 8px 24px rgba(255, 184, 77, .32); }
+  .agency-nav button { position: relative; overflow: hidden; }
+  .agency-nav button:before { content: ""; position: absolute; left: 0; width: 3px; height: 18px; border-radius: 0 8px 8px 0; background: #ffbd5e; opacity: 0; transition: opacity .2s ease; }
+  .agency-nav button:hover:before, .agency-nav button[data-active="true"]:before { opacity: 1; }
+  .agency-content { width: 100%; max-width: 1360px; padding: 24px 34px 46px; }
+  .agency-topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 22px; }
+  .agency-topbar-title { font: 800 12px Sora, sans-serif; color: #7b8095; letter-spacing: .12em; text-transform: uppercase; }
+  .live-status { display: inline-flex; align-items: center; gap: 7px; background: rgba(255,255,255,.72); border: 1px solid rgba(226,228,238,.9); box-shadow: 0 7px 20px rgba(49,54,81,.06); border-radius: 999px; padding: 8px 12px; color: #5e6377; font-size: 12px; font-weight: 700; }
+  .live-dot { width: 7px; height: 7px; border-radius: 50%; background: #35c49a; box-shadow: 0 0 0 4px rgba(53,196,154,.13); animation: pulse 2s infinite; }
+  .crm-card { box-shadow: 0 10px 30px rgba(53, 57, 82, .055); transition: transform .22s ease, box-shadow .22s ease; }
+  .crm-card:hover { transform: translateY(-3px); box-shadow: 0 16px 34px rgba(53, 57, 82, .1); }
+  .dashboard-hero { position: relative; overflow: hidden; color: #fff; padding: 29px 30px; border-radius: 22px; margin-bottom: 22px; background: linear-gradient(115deg, #171a31 0%, #302258 53%, #126c70 135%); box-shadow: 0 20px 45px rgba(36, 29, 78, .22); animation: enter .5s ease both; }
+  .dashboard-hero:after { content: ""; position: absolute; width: 230px; height: 230px; border-radius: 50%; right: -52px; top: -95px; background: radial-gradient(circle, rgba(255,194,104,.72) 0 4%, rgba(255,194,104,.16) 5% 42%, transparent 43%); }
+  .dashboard-hero:before { content: ""; position: absolute; width: 155px; height: 155px; border-radius: 30px; right: 105px; bottom: -95px; border: 1px solid rgba(255,255,255,.24); transform: rotate(28deg); }
+  .hero-grid { display: flex; gap: 22px; align-items: end; justify-content: space-between; position: relative; z-index: 1; }
+  .hero-eyebrow { display: flex; gap: 7px; align-items: center; color: #ffc469; font-size: 11px; font-weight: 800; letter-spacing: .11em; text-transform: uppercase; }
+  .hero-title { margin: 7px 0 6px; font: 800 clamp(25px, 3.2vw, 38px)/1.08 Sora, sans-serif; letter-spacing: -.05em; }
+  .hero-copy { max-width: 500px; color: #c9c8de; font-size: 13.5px; line-height: 1.55; }
+  .hero-chip { padding: 12px 15px; white-space: nowrap; border-radius: 13px; background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.18); backdrop-filter: blur(8px); color: #fff; font-size: 12px; font-weight: 700; }
+  .hero-chip b { color: #ffca74; font: 800 21px Sora, sans-serif; margin-right: 5px; }
+  @keyframes enter { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes pulse { 50% { transform: scale(.72); opacity: .65; } }
+  @media (max-width: 760px) { .agency-shell { display: block !important; } .agency-sidebar { position: relative; height: auto; width: 100% !important; min-height: auto !important; } .agency-nav { flex-direction: row !important; overflow-x: auto; padding-bottom: 4px; } .agency-nav button { flex: 0 0 auto; } .agency-profile { display: none; } .agency-content { padding: 18px 16px 32px !important; } .hero-grid { align-items: flex-start; flex-direction: column; } .agency-topbar { margin-bottom: 16px; } }
+`;
 
 const STAGES = ["New", "Meeting", "Proposal", "Negotiation", "Won", "Lost"];
 const CONTENT_STAGES = ["Idea", "Script", "Approval", "Shoot", "Editing", "QC", "Client Review", "Revision", "Final Approval", "Publish"];
@@ -229,41 +261,49 @@ function App({ profile }) {
   async function updateLeaveStatus(id, status) { await supabase.from("leaves").update({ status }).eq("id", id); }
 
   return (
-    <div style={{ fontFamily: "Inter, sans-serif", background: C.paper, minHeight: "100vh", color: C.ink, display: "flex" }}>
-      <style>{FONT}</style>
+    <div className="agency-shell" style={{ fontFamily: "Inter, sans-serif", color: C.ink, display: "flex" }}>
+      <style>{FONT}{APP_STYLES}</style>
 
-      <div style={{ width: 232, background: C.ink, color: "#fff", padding: "22px 16px", display: "flex", flexDirection: "column", flexShrink: 0, minHeight: "100vh" }}>
+      <div className="agency-sidebar" style={{ width: 254, color: "#fff", padding: "24px 16px", display: "flex", flexDirection: "column", flexShrink: 0, minHeight: "100vh" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "0 6px 22px" }}>
-          <div style={{ width: 34, height: 34, borderRadius: 9, background: C.amber, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Sora", fontWeight: 800, color: C.ink }}>Y</div>
+          <div className="agency-brand-mark" style={{ width: 38, height: 38, borderRadius: 12, background: "linear-gradient(135deg, #FFC465, #E8843C)", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Sora", fontWeight: 800, color: C.ink }}>Y</div>
           <div>
-            <div style={{ fontFamily: "Sora", fontWeight: 700, fontSize: 15, lineHeight: 1.1 }}>Yuzi</div>
-            <div style={{ fontSize: 11, color: "#9BA1B0" }}>Marketing Media</div>
+            <div style={{ fontFamily: "Sora", fontWeight: 800, fontSize: 16, lineHeight: 1.1, letterSpacing: "-.03em" }}>Yuzi</div>
+            <div style={{ fontSize: 10.5, color: "#ABAEC2", letterSpacing: ".08em", textTransform: "uppercase", marginTop: 3 }}>Creative Studio</div>
           </div>
         </div>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+        <div className="agency-nav" style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+          <div style={{ color: "#858AA4", fontSize: 10, fontWeight: 800, letterSpacing: ".13em", padding: "0 12px 7px", textTransform: "uppercase" }}>Workspace</div>
           {navItemsByRole[role].map(item => {
             const Icon = icons[item];
             const active = nav === item;
             return (
-              <button key={item} onClick={() => { setNav(item); setActiveClient(null); }}
-                style={{ display: "flex", alignItems: "center", gap: 10, padding: "9px 12px", borderRadius: 9, background: active ? C.inkSoft : "transparent", color: active ? "#fff" : "#B7BBC7", border: "none", cursor: "pointer", fontSize: 13.5, fontWeight: 600, textAlign: "left" }}>
+              <button data-active={active} key={item} onClick={() => { setNav(item); setActiveClient(null); }}
+                style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", borderRadius: 10, background: active ? "linear-gradient(100deg, rgba(255,255,255,.16), rgba(255,255,255,.07))" : "transparent", color: active ? "#fff" : "#B7BBC7", border: active ? "1px solid rgba(255,255,255,.09)" : "1px solid transparent", cursor: "pointer", fontSize: 13.5, fontWeight: 700, textAlign: "left" }}>
                 <Icon size={16} strokeWidth={2} /> {item}
               </button>
             );
           })}
         </div>
 
-        <div style={{ marginTop: "auto", paddingTop: 18, borderTop: `1px solid #2A2F40` }}>
+        <div className="agency-profile" style={{ marginTop: "auto", padding: "16px 8px 0", borderTop: "1px solid rgba(255,255,255,.11)" }}>
           <div style={{ fontSize: 12, color: "#B7BBC7", fontWeight: 600 }}>{profile.full_name || "You"}</div>
           <div style={{ fontSize: 11.5, color: "#7E8494", marginBottom: 10 }}>{role}</div>
-          <button onClick={() => supabase.auth.signOut()} style={{ ...btnGhost, width: "100%", justifyContent: "center", background: C.inkSoft, color: "#fff" }}>
+          <button onClick={() => supabase.auth.signOut()} style={{ ...btnGhost, width: "100%", justifyContent: "center", background: "rgba(255,255,255,.09)", color: "#fff" }}>
             <LogOut size={13} /> Log out
           </button>
         </div>
       </div>
 
-      <div style={{ flex: 1, padding: "26px 34px", maxWidth: 1180 }}>
+      <div className="agency-content">
+        <div className="agency-topbar">
+          <div className="agency-topbar-title">Yuzi / {nav}</div>
+          <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+            <button aria-label="Notifications" style={{ border: "1px solid #e3e5ee", background: "rgba(255,255,255,.72)", color: C.ink, width: 34, height: 34, borderRadius: 11, display: "grid", placeItems: "center", cursor: "pointer" }}><Bell size={15} /></button>
+            <div className="live-status"><span className="live-dot" /> Live workspace</div>
+          </div>
+        </div>
         {nav === "Dashboard" && <DashboardView role={role} clients={clients} tasks={visibleTasks} leads={leads} overdue={overdue} blocked={blocked} pendingApprovals={pendingApprovals} wonLeadsThisMonth={wonLeadsThisMonth} me={me} />}
         {nav === "Leads" && <LeadsView leads={leads} setShowAddLead={setShowAddLead} moveLeadStage={moveLeadStage} convertLeadToClient={convertLeadToClient} />}
         {nav === "Clients" && !activeClient && <ClientsView clients={clients} tasks={tasks} onOpen={setActiveClient} />}
@@ -289,7 +329,7 @@ function Pill({ children, tone = "slate" }) {
   const t = tones[tone];
   return <span style={{ background: t.bg, color: t.fg, fontSize: 12, fontWeight: 600, padding: "3px 9px", borderRadius: 20, whiteSpace: "nowrap" }}>{children}</span>;
 }
-function Card({ children, style, ...rest }) { return <div style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 14, ...style }} {...rest}>{children}</div>; }
+function Card({ children, style, className = "", ...rest }) { return <div className={`crm-card ${className}`} style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 14, ...style }} {...rest}>{children}</div>; }
 function StatCard({ label, value, sub, tone }) {
   return (
     <Card style={{ padding: "18px 20px", flex: 1, minWidth: 150 }}>
@@ -327,6 +367,16 @@ function DashboardView({ role, clients, tasks, leads, overdue, blocked, pendingA
   const greetings = { Owner: "Agency overview", Management: "Today across the agency", Employee: `Hey ${me}, here's your day`, Client: "Your content, at a glance" };
   return (
     <div>
+      <div className="dashboard-hero">
+        <div className="hero-grid">
+          <div>
+            <div className="hero-eyebrow"><Sparkles size={14} fill="currentColor" /> Creative operations</div>
+            <div className="hero-title">{role === "Owner" ? "Make every campaign matter." : greetings[role]}</div>
+            <div className="hero-copy">One elegant command centre for bold ideas, smooth delivery, and client work that gets remembered.</div>
+          </div>
+          <div className="hero-chip"><b>{tasks.filter(t => t.status !== "Done").length}</b> active moves <ArrowUpRight size={15} style={{ verticalAlign: "middle", marginLeft: 4 }} /></div>
+        </div>
+      </div>
       <SectionTitle>{greetings[role]}</SectionTitle>
       {(role === "Owner" || role === "Management") && (
         <>
