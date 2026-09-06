@@ -6,13 +6,22 @@
 
 create extension if not exists pgcrypto;
 
+-- Fixed role options. Supabase Table Editor will show this as a dropdown.
+do $$
+begin
+  create type public.user_role as enum ('Owner', 'Management', 'Employee');
+exception
+  when duplicate_object then null;
+end $$;
+
 -- ------------------------------------------------------------
 -- 1. PROFILES (har login user ka role yahan store hota hai)
 -- ------------------------------------------------------------
 create table profiles (
   id uuid primary key references auth.users(id) on delete cascade,
   full_name text,
-  role text not null default 'Employee' check (role in ('Owner','Management','Employee','Client')),
+  email text,
+  role public.user_role not null default 'Employee',
   employee_name text,        -- Employee role ke liye: tasks/leaves mein yehi naam match hoga
   client_id uuid,            -- Client role ke liye: kis client se linked hai
   created_at timestamptz default now()
@@ -22,8 +31,8 @@ create table profiles (
 create or replace function public.handle_new_user()
 returns trigger as $$
 begin
-  insert into public.profiles (id, full_name, role)
-  values (new.id, new.raw_user_meta_data->>'full_name', 'Employee');
+  insert into public.profiles (id, full_name, email, role)
+  values (new.id, new.raw_user_meta_data->>'full_name', new.email, 'Employee');
   return new;
 end;
 $$ language plpgsql security definer;
@@ -37,7 +46,7 @@ create or replace function get_my_role() returns text
 language sql stable security definer
 set search_path = public
 as $$
-  select role from public.profiles where id = auth.uid();
+  select role::text from public.profiles where id = auth.uid();
 $$;
 
 create or replace function get_my_employee_name() returns text
@@ -118,10 +127,8 @@ create table tasks (
 
 alter table tasks enable row level security;
 create policy "owner_mgmt_full_access_tasks" on tasks for all using (get_my_role() in ('Owner','Management'));
-create policy "employee_view_own_tasks" on tasks for select using (get_my_role() = 'Employee' and assignee = get_my_employee_name());
-create policy "employee_update_own_tasks" on tasks for update using (get_my_role() = 'Employee' and assignee = get_my_employee_name());
-create policy "client_view_own_tasks" on tasks for select using (get_my_role() = 'Client' and client_id = get_my_client_id());
-create policy "client_update_review_stage" on tasks for update using (get_my_role() = 'Client' and client_id = get_my_client_id());
+create policy "employee_view_all_tasks" on tasks for select using (get_my_role() = 'Employee');
+create policy "employee_update_all_tasks" on tasks for update using (get_my_role() = 'Employee') with check (get_my_role() = 'Employee');
 
 -- ------------------------------------------------------------
 -- 5. LEAVES

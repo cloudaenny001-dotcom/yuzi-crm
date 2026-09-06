@@ -35,6 +35,14 @@ const APP_STYLES = `
   .live-dot { width: 7px; height: 7px; border-radius: 50%; background: #35c49a; box-shadow: 0 0 0 4px rgba(53,196,154,.13); animation: pulse 2s infinite; }
   .crm-card { box-shadow: 0 10px 30px rgba(53, 57, 82, .055); transition: transform .22s ease, box-shadow .22s ease; }
   .crm-card:hover { transform: translateY(-3px); box-shadow: 0 16px 34px rgba(53, 57, 82, .1); }
+  .task-board { display: grid; grid-template-columns: repeat(5, minmax(225px, 1fr)); gap: 14px; overflow-x: auto; padding: 4px 2px 14px; }
+  .task-column { min-height: 430px; padding: 12px; border: 1px solid #e2e4ee; border-radius: 16px; background: rgba(231,233,242,.55); }
+  .task-column-title { display: flex; align-items: center; gap: 8px; padding: 2px 3px 12px; color: #34394d; font: 700 12px Space Grotesk, sans-serif; }
+  .task-column-title span { width: 8px; height: 8px; border-radius: 50%; }
+  .task-column-title b { margin-left: auto; display: grid; place-items: center; min-width: 21px; height: 21px; border-radius: 7px; background: #fff; color: #7a7f91; font: 700 11px Manrope, sans-serif; }
+  .task-column-cards { display: flex; flex-direction: column; gap: 10px; }
+  .task-card { background: rgba(255,255,255,.94) !important; cursor: grab; }
+  .task-empty { display: grid; place-items: center; min-height: 86px; border: 1px dashed #cbd0df; border-radius: 11px; color: #9ba0af; font-size: 11.5px; }
   .dashboard-hero { position: relative; overflow: hidden; color: #fff; padding: 29px 30px; border-radius: 22px; margin-bottom: 22px; background: linear-gradient(115deg, #171a31 0%, #302258 53%, #126c70 135%); box-shadow: 0 20px 45px rgba(36, 29, 78, .22); animation: enter .5s ease both; }
   .dashboard-hero:after { content: ""; position: absolute; width: 230px; height: 230px; border-radius: 50%; right: -52px; top: -95px; background: radial-gradient(circle, rgba(255,194,104,.72) 0 4%, rgba(255,194,104,.16) 5% 42%, transparent 43%); }
   .dashboard-hero:before { content: ""; position: absolute; width: 155px; height: 155px; border-radius: 30px; right: 105px; bottom: -95px; border: 1px solid rgba(255,255,255,.24); transform: rotate(28deg); }
@@ -46,7 +54,7 @@ const APP_STYLES = `
   .hero-chip b { color: #ffca74; font: 700 21px Space Grotesk, sans-serif; margin-right: 5px; }
   @keyframes enter { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
   @keyframes pulse { 50% { transform: scale(.72); opacity: .65; } }
-  @media (max-width: 760px) { .agency-shell { display: block !important; } .agency-sidebar { position: relative; height: auto; width: 100% !important; min-height: auto !important; } .agency-nav { flex-direction: row !important; overflow-x: auto; padding-bottom: 4px; } .agency-nav button { flex: 0 0 auto; } .agency-profile { display: none; } .agency-content { padding: 18px 16px 32px !important; } .hero-grid { align-items: flex-start; flex-direction: column; } .agency-topbar { margin-bottom: 16px; } .responsive-dashboard-grid, .responsive-client-grid, .responsive-overview-grid, .responsive-team-grid, .responsive-report-grid { grid-template-columns: 1fr !important; } .responsive-table { overflow-x: auto; } .responsive-table > div { min-width: 650px; } }
+  @media (max-width: 760px) { .agency-shell { display: block !important; } .agency-sidebar { position: relative; height: auto; width: 100% !important; min-height: auto !important; } .agency-nav { flex-direction: row !important; overflow-x: auto; padding-bottom: 4px; } .agency-nav button { flex: 0 0 auto; } .agency-profile { display: none; } .agency-content { padding: 18px 16px 32px !important; } .hero-grid { align-items: flex-start; flex-direction: column; } .agency-topbar { margin-bottom: 16px; } .responsive-dashboard-grid, .responsive-client-grid, .responsive-overview-grid, .responsive-team-grid, .responsive-report-grid { grid-template-columns: 1fr !important; } .responsive-table { overflow-x: auto; } .responsive-table > div { min-width: 650px; } .task-board { grid-template-columns: repeat(5, 254px); margin-right: -16px; padding-right: 16px; } }
 `;
 const AUTH_STYLES = `
   .auth-page { position: relative; min-height: 100vh; display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(370px, .8fr); overflow: hidden; background: #111428; color: #fff; }
@@ -86,7 +94,7 @@ const STAGES = ["New", "Meeting", "Proposal", "Negotiation", "Won", "Lost"];
 const CONTENT_STAGES = ["Idea", "Script", "Approval", "Shoot", "Editing", "QC", "Client Review", "Revision", "Final Approval", "Publish"];
 const CONTENT_TYPES = ["Reel", "Post", "Carousel", "Story", "Ad", "Video", "Other"];
 const LEAVE_TYPES = ["Casual", "Sick", "Paid", "Unpaid"];
-const ROLES = ["Owner", "Management", "Employee", "Client"];
+const ROLES = ["Owner", "Management", "Employee"];
 
 function normaliseRole(role) {
   const matchedRole = ROLES.find(item => item.toLowerCase() === String(role || "").trim().toLowerCase());
@@ -232,6 +240,7 @@ function App({ profile }) {
   const [tasks, setTasks] = useState([]);
   const [leaves, setLeaves] = useState([]);
   const [showAddLead, setShowAddLead] = useState(false);
+  const [showAddTask, setShowAddTask] = useState(false);
   const [activeClient, setActiveClient] = useState(null);
   const [filterClient, setFilterClient] = useState("all");
   const [filterEmployee, setFilterEmployee] = useState("all");
@@ -260,21 +269,18 @@ function App({ profile }) {
   }
 
   const navItemsByRole = {
-    Owner: ["Dashboard", "Leads", "Clients", "Projects", "Content Calendar", "Approvals", "Team", "Leave", "Reports"],
-    Management: ["Dashboard", "Leads", "Clients", "Projects", "Content Calendar", "Approvals", "Team", "Leave", "Reports"],
-    Employee: ["Dashboard", "Projects", "Content Calendar", "Leave"],
-    Client: ["Dashboard", "Content Calendar", "Approvals", "Files"],
+    Owner: ["Dashboard", "Task Board", "Team", "Leave", "Reports"],
+    Management: ["Dashboard", "Task Board", "Team", "Leave", "Reports"],
+    Employee: ["Dashboard", "Task Board", "Leave"],
   };
   const icons = {
-    Dashboard: LayoutDashboard, Leads: KanbanSquare, Clients: Users, Projects: Briefcase,
+    Dashboard: LayoutDashboard, "Task Board": KanbanSquare, Leads: KanbanSquare, Clients: Users, Projects: Briefcase,
     "Content Calendar": CalendarDays, Approvals: CheckCircle2, Team: UsersRound, Reports: BarChart3, Files: Paperclip, Leave: Plane,
   };
 
   const visibleTasks = useMemo(() => {
-    if (role === "Employee") return tasks.filter(t => t.assignee === me);
-    if (role === "Client") return tasks.filter(t => t.client_id === myClientId);
     return tasks;
-  }, [role, tasks, me, myClientId]);
+  }, [tasks]);
 
   const overdue = tasks.filter(isOverdue);
   const blocked = tasks.filter(t => t.status === "Blocked");
@@ -283,6 +289,7 @@ function App({ profile }) {
 
   // ---- WRITE FUNCTIONS (all go straight to Supabase) ----
   async function updateTask(id, patch) { await supabase.from("tasks").update(patch).eq("id", id); }
+  async function addTask(task) { await supabase.from("tasks").insert([task]); }
   async function addLead(lead) { await supabase.from("leads").insert([lead]); }
   async function moveLeadStage(id, stage) { await supabase.from("leads").update({ stage }).eq("id", id); }
   async function convertLeadToClient(lead) {
@@ -341,12 +348,7 @@ function App({ profile }) {
           </div>
         </div>
         {nav === "Dashboard" && <DashboardView role={role} clients={clients} tasks={visibleTasks} leads={leads} overdue={overdue} blocked={blocked} pendingApprovals={pendingApprovals} wonLeadsThisMonth={wonLeadsThisMonth} me={me} />}
-        {nav === "Leads" && <LeadsView leads={leads} setShowAddLead={setShowAddLead} moveLeadStage={moveLeadStage} convertLeadToClient={convertLeadToClient} />}
-        {nav === "Clients" && !activeClient && <ClientsView clients={clients} tasks={tasks} onOpen={setActiveClient} />}
-        {nav === "Clients" && activeClient && <ClientProfile client={activeClient} tasks={tasks.filter(t => t.client_id === activeClient.id)} onBack={() => setActiveClient(null)} />}
-        {nav === "Projects" && <ProjectsView tasks={visibleTasks} clients={clients} updateTask={updateTask} role={role} filterClient={filterClient} setFilterClient={setFilterClient} filterEmployee={filterEmployee} setFilterEmployee={setFilterEmployee} employees={employees} />}
-        {nav === "Content Calendar" && <CalendarView tasks={visibleTasks} clients={clients} />}
-        {nav === "Approvals" && <ApprovalsView tasks={role === "Client" ? tasks.filter(t => t.client_id === myClientId && t.content_stage === "Client Review") : pendingApprovals} clients={clients} updateTask={updateTask} role={role} />}
+        {nav === "Task Board" && <TaskBoard tasks={visibleTasks} employees={employees} role={role} updateTask={updateTask} onAdd={() => setShowAddTask(true)} />}
         {nav === "Team" && <TeamView tasks={tasks} leaves={leaves} employees={employees} />}
         {nav === "Leave" && <LeaveView role={role} me={me} leaves={leaves} addLeave={addLeave} updateLeaveStatus={updateLeaveStatus} employees={employees} />}
         {nav === "Reports" && <ReportsView leads={leads} tasks={tasks} clients={clients} />}
@@ -354,6 +356,7 @@ function App({ profile }) {
       </div>
 
       {showAddLead && <AddLeadModal employees={employees} onClose={() => setShowAddLead(false)} onAdd={l => { addLead(l); setShowAddLead(false); }} />}
+      {showAddTask && <AddTaskModal employees={employees} onClose={() => setShowAddTask(false)} onAdd={t => { addTask(t); setShowAddTask(false); }} />}
     </div>
   );
 }
@@ -400,7 +403,7 @@ function TaskRow({ t, hideAssignee }) {
 }
 
 function DashboardView({ role, clients, tasks, leads, overdue, blocked, pendingApprovals, wonLeadsThisMonth, me }) {
-  const greetings = { Owner: "Agency overview", Management: "Today across the agency", Employee: `Hey ${me}, here's your day`, Client: "Your content, at a glance" };
+  const greetings = { Owner: "Agency workspace", Management: "Team command centre", Employee: `Hey ${me}, here's your day` };
   return (
     <div>
       <div className="dashboard-hero">
@@ -417,10 +420,10 @@ function DashboardView({ role, clients, tasks, leads, overdue, blocked, pendingA
       {(role === "Owner" || role === "Management") && (
         <>
           <div style={{ display: "flex", gap: 14, flexWrap: "wrap", marginBottom: 22 }}>
-            <StatCard label="Active clients" value={clients.filter(c => c.status !== "Onboarding").length} />
-            <StatCard label="Leads in pipeline" value={leads.filter(l => !["Won", "Lost"].includes(l.stage)).length} />
+            <StatCard label="Total tasks" value={tasks.length} />
+            <StatCard label="In progress" value={tasks.filter(t => t.status === "In Progress").length} />
             <StatCard label="Overdue tasks" value={overdue.length} sub={overdue.length ? "Needs attention" : "All on track"} tone={overdue.length ? "red" : "teal"} />
-            <StatCard label="Pending approvals" value={pendingApprovals.length} />
+            <StatCard label="Ready for review" value={tasks.filter(t => t.status === "Review").length} />
             <StatCard label="Blocked work" value={blocked.length} tone={blocked.length ? "red" : "teal"} />
           </div>
           {blocked.length > 0 && (
@@ -428,29 +431,29 @@ function DashboardView({ role, clients, tasks, leads, overdue, blocked, pendingA
               <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}><AlertTriangle size={16} color={C.red} /><div style={{ fontWeight: 700, fontSize: 14.5 }}>At-risk work — needs a decision</div></div>
               {blocked.map(t => (
                 <div key={t.id} style={{ display: "flex", justifyContent: "space-between", padding: "8px 0", borderTop: `1px solid ${C.line}`, fontSize: 13.5 }}>
-                  <span><b>{t.title}</b> · {clients.find(c => c.id === t.client_id)?.name}</span><Pill tone="red">{t.delay_reason || "Blocked"}</Pill>
+                  <span><b>{t.title}</b> · {t.assignee || "Unassigned"}</span><Pill tone="red">{t.delay_reason || "Blocked"}</Pill>
                 </div>
               ))}
             </Card>
           )}
           <div className="responsive-dashboard-grid" style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: 18 }}>
             <Card style={{ padding: 18 }}>
-              <div style={{ fontWeight: 700, marginBottom: 10, fontSize: 14.5 }}>Sales pipeline snapshot</div>
-              {STAGES.map(s => {
-                const count = leads.filter(l => l.stage === s).length;
+              <div style={{ fontWeight: 700, marginBottom: 10, fontSize: 14.5 }}>Work flow snapshot</div>
+              {["Todo", "In Progress", "Review", "Blocked", "Done"].map(s => {
+                const count = tasks.filter(t => t.status === s).length;
                 return <div key={s} style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 7 }}>
                   <div style={{ width: 90, fontSize: 12.5, color: C.slate, fontWeight: 600 }}>{s}</div>
                   <div style={{ flex: 1, height: 8, background: C.slateSoft, borderRadius: 6, overflow: "hidden" }}>
-                    <div style={{ width: `${Math.min(100, count * 22)}%`, height: "100%", background: s === "Won" ? C.teal : s === "Lost" ? C.slate : C.amber }} />
+                    <div style={{ width: `${Math.min(100, count * 22)}%`, height: "100%", background: s === "Done" ? C.teal : s === "Blocked" ? C.red : C.amber }} />
                   </div><div style={{ width: 18, fontSize: 12.5, fontWeight: 700 }}>{count}</div>
                 </div>;
               })}
-              <div style={{ fontSize: 12.5, color: C.slate, marginTop: 8 }}>{wonLeadsThisMonth} lead(s) converted to clients this cycle.</div>
+              <div style={{ fontSize: 12.5, color: C.slate, marginTop: 8 }}>Keep every card moving forward, one great deliverable at a time.</div>
             </Card>
             <Card style={{ padding: 18 }}>
-              <div style={{ fontWeight: 700, marginBottom: 10, fontSize: 14.5 }}>Client health</div>
-              {clients.map(c => <div key={c.id} style={{ display: "flex", justifyContent: "space-between", padding: "7px 0", borderTop: `1px solid ${C.line}`, fontSize: 13.5 }}>
-                <span>{c.name}</span><Pill tone={c.status === "Active" ? "teal" : c.status === "At Risk" ? "red" : "amber"}>{c.status}</Pill>
+              <div style={{ fontWeight: 700, marginBottom: 10, fontSize: 14.5 }}>Task priority mix</div>
+              {["High", "Medium", "Low"].map(priority => <div key={priority} style={{ display: "flex", justifyContent: "space-between", padding: "7px 0", borderTop: `1px solid ${C.line}`, fontSize: 13.5 }}>
+                <span>{priority} priority</span><Pill tone={priority === "High" ? "red" : priority === "Medium" ? "amber" : "slate"}>{tasks.filter(t => t.priority === priority).length} cards</Pill>
               </div>)}
             </Card>
           </div>
@@ -467,20 +470,6 @@ function DashboardView({ role, clients, tasks, leads, overdue, blocked, pendingA
             <div style={{ fontWeight: 700, marginBottom: 10, fontSize: 14.5 }}>Today &amp; priorities</div>
             {[...tasks].sort((a, b) => daysUntil(a.due) - daysUntil(b.due)).map(t => <TaskRow key={t.id} t={t} />)}
             {tasks.length === 0 && <EmptyNote text="Nothing assigned yet — check back soon." />}
-          </Card>
-        </>
-      )}
-      {role === "Client" && (
-        <>
-          <div style={{ display: "flex", gap: 14, marginBottom: 20 }}>
-            <StatCard label="Pending your approval" value={pendingApprovals.length} />
-            <StatCard label="In production" value={tasks.filter(t => !["Publish", "Final Approval"].includes(t.content_stage)).length} />
-            <StatCard label="Published this month" value={tasks.filter(t => t.content_stage === "Publish").length} />
-          </div>
-          <Card style={{ padding: 18 }}>
-            <div style={{ fontWeight: 700, marginBottom: 10, fontSize: 14.5 }}>Upcoming for you</div>
-            {tasks.map(t => <TaskRow key={t.id} t={t} hideAssignee />)}
-            {tasks.length === 0 && <EmptyNote text="No content scheduled yet." />}
           </Card>
         </>
       )}
@@ -613,6 +602,66 @@ function ClientProfile({ client, tasks, onBack }) {
       {tab === "Content Calendar" && <Card style={{ padding: 16 }}>{tasks.map(t => <div key={t.id} style={{ display: "flex", justifyContent: "space-between", padding: "8px 0", borderTop: `1px solid ${C.line}`, fontSize: 13.5 }}><span>{t.title}</span><span style={{ color: C.slate }}>{t.due}</span></div>)}</Card>}
       {tab === "Files" && <FilesView client={client} />}
       {tab === "Notes" && <Card style={{ padding: 16, fontSize: 13.5, color: C.slate }}>No notes added yet.</Card>}
+    </div>
+  );
+}
+
+function TaskBoard({ tasks, employees, role, updateTask, onAdd }) {
+  const columns = [
+    { status: "Todo", color: "#7d8293" },
+    { status: "In Progress", color: "#5a78f0" },
+    { status: "Review", color: "#d99a3d" },
+    { status: "Blocked", color: "#c1483c" },
+    { status: "Done", color: "#2f9b7e" },
+  ];
+  const canCreate = role === "Owner" || role === "Management";
+  return (
+    <div>
+      <SectionTitle action={canCreate && <button onClick={onAdd} style={btnAmber}><Plus size={15} /> Create task card</button>}>Creative task board</SectionTitle>
+      <div style={{ color: C.slate, fontSize: 13, marginTop: -8, marginBottom: 16 }}>A shared internal workspace—everyone can move cards and keep production flowing.</div>
+      <div className="task-board">
+        {columns.map(column => {
+          const columnTasks = tasks.filter(task => task.status === column.status);
+          return (
+            <div className="task-column" key={column.status}>
+              <div className="task-column-title"><span style={{ background: column.color }} /> {column.status}<b>{columnTasks.length}</b></div>
+              <div className="task-column-cards">
+                {columnTasks.map(task => (
+                  <Card key={task.id} className="task-card" style={{ padding: 14, borderTop: `3px solid ${task.priority === "High" ? C.red : task.priority === "Medium" ? C.amber : C.teal}` }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", gap: 8 }}>
+                      <div style={{ fontFamily: "Space Grotesk", fontWeight: 700, fontSize: 14 }}>{task.title}</div>
+                      <Pill tone={task.priority === "High" ? "red" : task.priority === "Medium" ? "amber" : "teal"}>{task.priority}</Pill>
+                    </div>
+                    <div style={{ color: C.slate, fontSize: 11.5, marginTop: 7 }}>{task.type || "General"} · {task.assignee || "Unassigned"}</div>
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, marginTop: 14 }}>
+                      <span style={{ fontSize: 11.5, color: isOverdue(task) ? C.red : C.slate, fontWeight: isOverdue(task) ? 700 : 600 }}>{task.due || "No due date"}</span>
+                      <select aria-label={`Change status for ${task.title}`} value={task.status} onChange={e => updateTask(task.id, { status: e.target.value })} style={{ ...miniSelect, maxWidth: 114 }}>
+                        {columns.map(item => <option key={item.status}>{item.status}</option>)}
+                      </select>
+                    </div>
+                  </Card>
+                ))}
+                {columnTasks.length === 0 && <div className="task-empty">No cards here yet</div>}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function AddTaskModal({ employees, onClose, onAdd }) {
+  const [form, setForm] = useState({ title: "", type: "Content", assignee: employees[0] || "", priority: "Medium", due: todayStr(), status: "Todo", content_stage: "Idea" });
+  return (
+    <div style={{ position: "fixed", inset: 0, padding: 18, background: "rgba(13,15,28,.58)", display: "grid", placeItems: "center", zIndex: 50 }}>
+      <Card style={{ width: "min(440px, 100%)", padding: 22 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 15 }}><div style={{ fontFamily: "Space Grotesk", fontSize: 18, fontWeight: 700 }}>Create task card</div><button onClick={onClose} style={{ border: 0, background: "transparent", cursor: "pointer" }}><X size={18} /></button></div>
+        <input autoFocus placeholder="What needs to be done?" value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} style={input} />
+        <div style={{ display: "flex", gap: 9 }}><input placeholder="Task type" value={form.type} onChange={e => setForm({ ...form, type: e.target.value })} style={input} /><input type="date" value={form.due} onChange={e => setForm({ ...form, due: e.target.value })} style={input} /></div>
+        <div style={{ display: "flex", gap: 9 }}><select value={form.assignee} onChange={e => setForm({ ...form, assignee: e.target.value })} style={input}><option value="">Unassigned</option>{employees.map(employee => <option key={employee}>{employee}</option>)}</select><select value={form.priority} onChange={e => setForm({ ...form, priority: e.target.value })} style={input}>{["Low", "Medium", "High"].map(priority => <option key={priority}>{priority}</option>)}</select></div>
+        <button onClick={() => form.title.trim() && onAdd(form)} style={{ ...btnAmber, width: "100%", justifyContent: "center" }}>Create card <ArrowRight size={15} /></button>
+      </Card>
     </div>
   );
 }
