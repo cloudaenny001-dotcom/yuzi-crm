@@ -21,6 +21,12 @@ const STAGES = ["New", "Meeting", "Proposal", "Negotiation", "Won", "Lost"];
 const CONTENT_STAGES = ["Idea", "Script", "Approval", "Shoot", "Editing", "QC", "Client Review", "Revision", "Final Approval", "Publish"];
 const CONTENT_TYPES = ["Reel", "Post", "Carousel", "Story", "Ad", "Video", "Other"];
 const LEAVE_TYPES = ["Casual", "Sick", "Paid", "Unpaid"];
+const ROLES = ["Owner", "Management", "Employee", "Client"];
+
+function normaliseRole(role) {
+  const matchedRole = ROLES.find(item => item.toLowerCase() === String(role || "").trim().toLowerCase());
+  return matchedRole || "Employee";
+}
 
 function todayStr() { return new Date().toISOString().slice(0, 10); }
 function daysUntil(dateStr) { return Math.round((new Date(dateStr) - new Date(todayStr())) / 86400000); }
@@ -34,38 +40,92 @@ export default function Root() {
   const [session, setSession] = useState(null);
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [profileError, setProfileError] = useState("");
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => setSession(data.session));
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, s) => setSession(s));
-    return () => listener.subscription.unsubscribe();
+    let active = true;
+    supabase.auth.getSession().then(({ data, error }) => {
+      if (!active) return;
+      setSession(data?.session || null);
+      if (error) setProfileError("Your login session could not be read. Please log in again.");
+      setLoading(false);
+    });
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, s) => {
+      setSession(s);
+      setProfileError("");
+      setLoading(false);
+    });
+    return () => { active = false; listener.subscription.unsubscribe(); };
   }, []);
 
   useEffect(() => {
+    let active = true;
     if (!session) { setProfile(null); setLoading(false); return; }
-    supabase.from("profiles").select("*").eq("id", session.user.id).single()
-      .then(({ data }) => { setProfile(data); setLoading(false); });
+    setLoading(true);
+    supabase.from("profiles").select("*").eq("id", session.user.id).maybeSingle()
+      .then(({ data, error }) => {
+        if (!active) return;
+        setProfile(data ? { ...data, role: normaliseRole(data.role) } : null);
+        setProfileError(error ? "Your account details could not be loaded. Please try again." : "");
+        setLoading(false);
+      });
+    return () => { active = false; };
   }, [session]);
 
   if (loading) return <div style={{ padding: 40, fontFamily: "Inter" }}>Loading...</div>;
   if (!session) return <Login />;
-  if (!profile) return <div style={{ padding: 40, fontFamily: "Inter" }}>Setting up your account... refresh in a few seconds.</div>;
+  if (!profile) return <AccountSetup error={profileError} />;
 
   return <App profile={profile} />;
+}
+
+function AccountSetup({ error }) {
+  return (
+    <div style={{ minHeight: "100vh", display: "grid", placeItems: "center", background: C.paper, padding: 24, fontFamily: "Inter, sans-serif" }}>
+      <style>{FONT}</style>
+      <Card style={{ width: "min(440px, 100%)", padding: 26 }}>
+        <div style={{ fontFamily: "Sora", fontSize: 19, fontWeight: 700, marginBottom: 8 }}>Account setup is incomplete</div>
+        <div style={{ color: C.slate, fontSize: 13.5, lineHeight: 1.55 }}>
+          {error || "Your login worked, but this user does not yet have a CRM profile."} Ask the admin to add your row in the <b>profiles</b> table and assign a role, then refresh.
+        </div>
+        <div style={{ display: "flex", gap: 8, marginTop: 18 }}>
+          <button style={btnAmber} onClick={() => window.location.reload()}>Refresh</button>
+          <button style={btnGhost} onClick={() => supabase.auth.signOut()}>Log out</button>
+        </div>
+      </Card>
+    </div>
+  );
 }
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [notice, setNotice] = useState("");
+  const [submitting, setSubmitting] = useState(false);
   const [mode, setMode] = useState("signin"); // signin | signup
 
   async function handleSubmit(e) {
     e.preventDefault();
+    if (submitting) return;
     setError("");
-    const fn = mode === "signin" ? supabase.auth.signInWithPassword : supabase.auth.signUp;
-    const { error } = await fn({ email, password });
-    if (error) setError(error.message);
+    setNotice("");
+    setSubmitting(true);
+    try {
+      // Call methods directly: this keeps the Supabase auth client context intact.
+      const result = mode === "signin"
+        ? await supabase.auth.signInWithPassword({ email: email.trim(), password })
+        : await supabase.auth.signUp({ email: email.trim(), password });
+      if (result.error) {
+        setError(result.error.message);
+      } else if (mode === "signup" && !result.data.session) {
+        setNotice("Account created. Please confirm the email sent to you, then log in.");
+      }
+    } catch (err) {
+      setError(err?.message || "Login failed. Please check your internet connection and try again.");
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -76,12 +136,13 @@ function Login() {
         <div style={{ fontSize: 13, color: C.slate, marginBottom: 20 }}>{mode === "signin" ? "Log in to your CRM" : "Create your account"}</div>
         <input required type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} style={input} />
         <input required type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} style={input} />
-        {error && <div style={{ color: C.red, fontSize: 12.5, marginBottom: 10 }}>{error}</div>}
-        <button type="submit" style={{ ...btnAmber, width: "100%", justifyContent: "center" }}>
-          {mode === "signin" ? "Log in" : "Sign up"}
+        {error && <div role="alert" style={{ color: C.red, fontSize: 12.5, marginBottom: 10 }}>{error}</div>}
+        {notice && <div style={{ color: C.teal, fontSize: 12.5, marginBottom: 10 }}>{notice}</div>}
+        <button type="submit" disabled={submitting} style={{ ...btnAmber, width: "100%", justifyContent: "center", opacity: submitting ? 0.7 : 1, cursor: submitting ? "wait" : "pointer" }}>
+          {submitting ? "Please wait..." : mode === "signin" ? "Log in" : "Sign up"}
         </button>
         <div style={{ textAlign: "center", marginTop: 14, fontSize: 12.5, color: C.slate, cursor: "pointer" }}
-          onClick={() => setMode(mode === "signin" ? "signup" : "signin")}>
+          onClick={() => { if (!submitting) { setMode(mode === "signin" ? "signup" : "signin"); setError(""); setNotice(""); } }}>
           {mode === "signin" ? "New here? Create an account" : "Already have an account? Log in"}
         </div>
       </form>
@@ -93,7 +154,7 @@ function Login() {
    MAIN APP — profile.role bataata hai kaunsa view dikhana hai
 ============================================================ */
 function App({ profile }) {
-  const role = profile.role;             // Owner | Management | Employee | Client
+  const role = normaliseRole(profile.role); // Owner | Management | Employee | Client
   const me = profile.employee_name;      // sirf Employee role ke liye
   const myClientId = profile.client_id;  // sirf Client role ke liye
 

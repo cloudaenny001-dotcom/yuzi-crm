@@ -33,17 +33,26 @@ create trigger on_auth_user_created
   for each row execute procedure public.handle_new_user();
 
 -- Helper functions (policies inhe use karengi)
-create or replace function get_my_role() returns text as $$
-  select role from profiles where id = auth.uid();
-$$ language sql stable;
+create or replace function get_my_role() returns text
+language sql stable security definer
+set search_path = public
+as $$
+  select role from public.profiles where id = auth.uid();
+$$;
 
-create or replace function get_my_employee_name() returns text as $$
-  select employee_name from profiles where id = auth.uid();
-$$ language sql stable;
+create or replace function get_my_employee_name() returns text
+language sql stable security definer
+set search_path = public
+as $$
+  select employee_name from public.profiles where id = auth.uid();
+$$;
 
-create or replace function get_my_client_id() returns uuid as $$
-  select client_id from profiles where id = auth.uid();
-$$ language sql stable;
+create or replace function get_my_client_id() returns uuid
+language sql stable security definer
+set search_path = public
+as $$
+  select client_id from public.profiles where id = auth.uid();
+$$;
 
 alter table profiles enable row level security;
 create policy "view_own_profile" on profiles for select using (id = auth.uid());
