@@ -48,6 +48,41 @@ const APP_STYLES = `
   @keyframes pulse { 50% { transform: scale(.72); opacity: .65; } }
   @media (max-width: 760px) { .agency-shell { display: block !important; } .agency-sidebar { position: relative; height: auto; width: 100% !important; min-height: auto !important; } .agency-nav { flex-direction: row !important; overflow-x: auto; padding-bottom: 4px; } .agency-nav button { flex: 0 0 auto; } .agency-profile { display: none; } .agency-content { padding: 18px 16px 32px !important; } .hero-grid { align-items: flex-start; flex-direction: column; } .agency-topbar { margin-bottom: 16px; } }
 `;
+const AUTH_STYLES = `
+  .auth-page { position: relative; min-height: 100vh; display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(370px, .8fr); overflow: hidden; background: #111428; color: #fff; }
+  .auth-page:before, .auth-page:after { content: ""; position: absolute; border-radius: 50%; filter: blur(2px); pointer-events: none; }
+  .auth-page:before { width: 35rem; height: 35rem; top: -18rem; left: -12rem; background: radial-gradient(circle, rgba(251, 165, 75, .38), rgba(251, 165, 75, 0) 68%); animation: drift 10s ease-in-out infinite alternate; }
+  .auth-page:after { width: 42rem; height: 42rem; bottom: -26rem; right: 20%; background: radial-gradient(circle, rgba(91, 111, 255, .38), rgba(91, 111, 255, 0) 67%); animation: drift 12s ease-in-out infinite alternate-reverse; }
+  .auth-showcase { position: relative; z-index: 1; padding: clamp(32px, 5vw, 74px); display: flex; flex-direction: column; justify-content: space-between; border-right: 1px solid rgba(255,255,255,.1); }
+  .auth-brand { display: inline-flex; align-items: center; gap: 11px; font: 800 18px Sora, sans-serif; letter-spacing: -.04em; }
+  .auth-brand-logo { width: 42px; height: 42px; display: grid; place-items: center; border-radius: 14px; color: #171526; background: linear-gradient(135deg, #ffe084, #f59253); box-shadow: 0 12px 30px rgba(246, 159, 78, .28); }
+  .auth-kicker { display: inline-flex; align-items: center; gap: 7px; color: #ffcb7b; font-size: 11px; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; }
+  .auth-headline { margin: 16px 0; max-width: 620px; font: 800 clamp(42px, 5.3vw, 74px)/.99 Sora, sans-serif; letter-spacing: -.075em; }
+  .auth-headline .gradient-text { background: linear-gradient(95deg, #fff 15%, #d5ccff 45%, #ffca7e 96%); background-clip: text; -webkit-background-clip: text; color: transparent; }
+  .auth-copy { max-width: 480px; color: #b5b8cb; font-size: 15px; line-height: 1.65; }
+  .auth-orbit { position: absolute; right: 7%; bottom: 11%; width: clamp(185px, 23vw, 310px); aspect-ratio: 1; border: 1px solid rgba(255,255,255,.13); border-radius: 50%; animation: spin 24s linear infinite; }
+  .auth-orbit:before, .auth-orbit:after { content: ""; position: absolute; border-radius: 50%; }
+  .auth-orbit:before { width: 17px; height: 17px; top: 17%; left: 7%; background: #ffc467; box-shadow: 0 0 0 8px rgba(255,196,103,.12); }
+  .auth-orbit:after { width: 9px; height: 9px; bottom: 11%; right: 7%; background: #9d91ff; box-shadow: 0 0 0 7px rgba(157,145,255,.14); }
+  .auth-proof { display: flex; align-items: center; gap: 10px; color: #9296af; font-size: 12px; font-weight: 600; }
+  .proof-line { width: 40px; height: 1px; background: #ffbf67; }
+  .auth-panel { position: relative; z-index: 2; display: grid; place-items: center; padding: 26px; background: linear-gradient(145deg, rgba(255,255,255,.1), rgba(255,255,255,.035)); backdrop-filter: blur(18px); }
+  .auth-card { width: min(100%, 400px); padding: 33px; border: 1px solid rgba(255,255,255,.17); border-radius: 26px; background: rgba(24,27,51,.67); box-shadow: 0 28px 70px rgba(0,0,0,.31); animation: auth-in .65s cubic-bezier(.2,.8,.2,1) both; }
+  .auth-card-title { margin: 13px 0 7px; font: 800 25px Sora, sans-serif; letter-spacing: -.05em; }
+  .auth-field-label { display: block; color: #b4b7cc; font-size: 11.5px; font-weight: 700; margin: 16px 0 6px; }
+  .auth-input { width: 100%; color: #fff; background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.13); padding: 12px 13px; border-radius: 11px; outline: none; font: 13.5px Inter, sans-serif; }
+  .auth-input:focus { border-color: #ffc56c; box-shadow: 0 0 0 4px rgba(255,197,108,.12); }
+  .auth-input::placeholder { color: #8589a1; }
+  .auth-submit { width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 8px; margin-top: 22px; padding: 12px; border: 0; border-radius: 11px; color: #282033; cursor: pointer; font: 800 13px Inter, sans-serif; background: linear-gradient(100deg, #ffd16d, #ee935d); box-shadow: 0 12px 25px rgba(235,147,75,.24); }
+  .auth-submit:hover { box-shadow: 0 16px 32px rgba(235,147,75,.38); }
+  .auth-switch { width: 100%; border: 0; background: transparent; color: #bdbfd0; cursor: pointer; padding: 16px 0 0; font: 600 12.5px Inter, sans-serif; }
+  .auth-switch span { color: #ffca72; }
+  .auth-secure { margin-top: 23px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,.1); color: #8186a1; font-size: 11px; text-align: center; }
+  @keyframes drift { to { transform: translate(55px, 35px) scale(1.1); } }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes auth-in { from { opacity: 0; transform: translateY(25px) scale(.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
+  @media (max-width: 820px) { .auth-page { grid-template-columns: 1fr; } .auth-showcase { min-height: 315px; padding: 28px; border-right: 0; border-bottom: 1px solid rgba(255,255,255,.1); } .auth-headline { max-width: 460px; font-size: clamp(37px, 10vw, 55px); } .auth-orbit { right: -40px; bottom: -55px; } .auth-proof { display: none; } .auth-panel { padding: 28px 16px; } }
+`;
 
 const STAGES = ["New", "Meeting", "Proposal", "Negotiation", "Won", "Lost"];
 const CONTENT_STAGES = ["Idea", "Script", "Approval", "Shoot", "Editing", "QC", "Client Review", "Revision", "Final Approval", "Publish"];
@@ -161,23 +196,38 @@ function Login() {
   }
 
   return (
-    <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: C.paper, fontFamily: "Inter" }}>
-      <style>{FONT}</style>
-      <form onSubmit={handleSubmit} style={{ background: C.card, padding: 30, borderRadius: 14, width: 320, border: `1px solid ${C.line}` }}>
-        <div style={{ fontFamily: "Sora", fontWeight: 700, fontSize: 20, marginBottom: 4 }}>Yuzi Marketing Media</div>
-        <div style={{ fontSize: 13, color: C.slate, marginBottom: 20 }}>{mode === "signin" ? "Log in to your CRM" : "Create your account"}</div>
-        <input required type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} style={input} />
-        <input required type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} style={input} />
-        {error && <div role="alert" style={{ color: C.red, fontSize: 12.5, marginBottom: 10 }}>{error}</div>}
-        {notice && <div style={{ color: C.teal, fontSize: 12.5, marginBottom: 10 }}>{notice}</div>}
-        <button type="submit" disabled={submitting} style={{ ...btnAmber, width: "100%", justifyContent: "center", opacity: submitting ? 0.7 : 1, cursor: submitting ? "wait" : "pointer" }}>
-          {submitting ? "Please wait..." : mode === "signin" ? "Log in" : "Sign up"}
-        </button>
-        <div style={{ textAlign: "center", marginTop: 14, fontSize: 12.5, color: C.slate, cursor: "pointer" }}
-          onClick={() => { if (!submitting) { setMode(mode === "signin" ? "signup" : "signin"); setError(""); setNotice(""); } }}>
-          {mode === "signin" ? "New here? Create an account" : "Already have an account? Log in"}
+    <div className="auth-page">
+      <style>{FONT}{AUTH_STYLES}</style>
+      <section className="auth-showcase">
+        <div className="auth-brand"><div className="auth-brand-logo">Y</div> Yuzi <span style={{ color: "#9194ac", fontWeight: 600 }}>Media</span></div>
+        <div style={{ position: "relative", zIndex: 1 }}>
+          <div className="auth-kicker"><Sparkles size={14} fill="currentColor" /> Ideas into impact</div>
+          <h1 className="auth-headline">Where brave brands <span className="gradient-text">become unforgettable.</span></h1>
+          <p className="auth-copy">The creative command centre for Yuzi Marketing Media—built to make every campaign sharper, faster, and more extraordinary.</p>
         </div>
-      </form>
+        <div className="auth-proof"><span className="proof-line" /> Strategy · Creativity · Momentum</div>
+        <div className="auth-orbit" />
+      </section>
+      <section className="auth-panel">
+        <form className="auth-card" onSubmit={handleSubmit}>
+          <div className="auth-kicker"><Sparkles size={14} fill="currentColor" /> Studio access</div>
+          <h2 className="auth-card-title">{mode === "signin" ? "Welcome back." : "Create your space."}</h2>
+          <div style={{ color: "#aeb1c5", fontSize: 13, lineHeight: 1.5 }}>{mode === "signin" ? "Sign in to continue shaping great work." : "Join the team behind the next big idea."}</div>
+          <label className="auth-field-label" htmlFor="login-email">Email address</label>
+          <input id="login-email" className="auth-input" required type="email" autoComplete="email" placeholder="you@company.com" value={email} onChange={e => setEmail(e.target.value)} />
+          <label className="auth-field-label" htmlFor="login-password">Password</label>
+          <input id="login-password" className="auth-input" required type="password" autoComplete={mode === "signin" ? "current-password" : "new-password"} placeholder="Enter your password" value={password} onChange={e => setPassword(e.target.value)} />
+          {error && <div role="alert" style={{ color: "#ff9c95", fontSize: 12.5, marginTop: 13, lineHeight: 1.45 }}>{error}</div>}
+          {notice && <div style={{ color: "#82e0be", fontSize: 12.5, marginTop: 13, lineHeight: 1.45 }}>{notice}</div>}
+          <button className="auth-submit" type="submit" disabled={submitting} style={{ opacity: submitting ? .7 : 1, cursor: submitting ? "wait" : "pointer" }}>
+            {submitting ? "Opening your workspace..." : mode === "signin" ? "Enter creative workspace" : "Create account"} {!submitting && <ArrowRight size={16} />}
+          </button>
+          <button className="auth-switch" type="button" disabled={submitting} onClick={() => { setMode(mode === "signin" ? "signup" : "signin"); setError(""); setNotice(""); }}>
+            {mode === "signin" ? <>New to Yuzi? <span>Create an account</span></> : <>Already have access? <span>Log in</span></>}
+          </button>
+          <div className="auth-secure">Secure workspace access · Yuzi Marketing Media</div>
+        </form>
+      </section>
     </div>
   );
 }
