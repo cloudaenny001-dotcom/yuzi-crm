@@ -16,10 +16,10 @@ const C = {
   line: "#E4E0D5", amber: "#D99A3D", amberSoft: "#F3E3C6", teal: "#2F7D6B",
   tealSoft: "#DCEDE8", red: "#C1483C", redSoft: "#F5DEDB", slate: "#6B7280", slateSoft: "#EDECE7",
 };
-const FONT = `@import url('https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');`;
+const FONT = `@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap');`;
 const APP_STYLES = `
   * { box-sizing: border-box; }
-  body { margin: 0; background: #f2f3f8; }
+  body { margin: 0; background: #f2f3f8; font-family: Manrope, sans-serif; }
   button, input, select, textarea { transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease; }
   button:not(:disabled):hover { transform: translateY(-1px); }
   .agency-shell { min-height: 100vh; background: radial-gradient(circle at 87% 8%, rgba(211, 120, 255, .16), transparent 21rem), radial-gradient(circle at 56% 84%, rgba(73, 199, 179, .15), transparent 25rem), #f4f5fa; }
@@ -30,7 +30,7 @@ const APP_STYLES = `
   .agency-nav button:hover:before, .agency-nav button[data-active="true"]:before { opacity: 1; }
   .agency-content { width: 100%; max-width: 1360px; padding: 24px 34px 46px; }
   .agency-topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 22px; }
-  .agency-topbar-title { font: 800 12px Sora, sans-serif; color: #7b8095; letter-spacing: .12em; text-transform: uppercase; }
+  .agency-topbar-title { font: 700 12px Space Grotesk, sans-serif; color: #7b8095; letter-spacing: .12em; text-transform: uppercase; }
   .live-status { display: inline-flex; align-items: center; gap: 7px; background: rgba(255,255,255,.72); border: 1px solid rgba(226,228,238,.9); box-shadow: 0 7px 20px rgba(49,54,81,.06); border-radius: 999px; padding: 8px 12px; color: #5e6377; font-size: 12px; font-weight: 700; }
   .live-dot { width: 7px; height: 7px; border-radius: 50%; background: #35c49a; box-shadow: 0 0 0 4px rgba(53,196,154,.13); animation: pulse 2s infinite; }
   .crm-card { box-shadow: 0 10px 30px rgba(53, 57, 82, .055); transition: transform .22s ease, box-shadow .22s ease; }
@@ -40,13 +40,13 @@ const APP_STYLES = `
   .dashboard-hero:before { content: ""; position: absolute; width: 155px; height: 155px; border-radius: 30px; right: 105px; bottom: -95px; border: 1px solid rgba(255,255,255,.24); transform: rotate(28deg); }
   .hero-grid { display: flex; gap: 22px; align-items: end; justify-content: space-between; position: relative; z-index: 1; }
   .hero-eyebrow { display: flex; gap: 7px; align-items: center; color: #ffc469; font-size: 11px; font-weight: 800; letter-spacing: .11em; text-transform: uppercase; }
-  .hero-title { margin: 7px 0 6px; font: 800 clamp(25px, 3.2vw, 38px)/1.08 Sora, sans-serif; letter-spacing: -.05em; }
+  .hero-title { margin: 7px 0 6px; font: 700 clamp(25px, 3.2vw, 38px)/1.08 Space Grotesk, sans-serif; letter-spacing: -.05em; }
   .hero-copy { max-width: 500px; color: #c9c8de; font-size: 13.5px; line-height: 1.55; }
   .hero-chip { padding: 12px 15px; white-space: nowrap; border-radius: 13px; background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.18); backdrop-filter: blur(8px); color: #fff; font-size: 12px; font-weight: 700; }
-  .hero-chip b { color: #ffca74; font: 800 21px Sora, sans-serif; margin-right: 5px; }
+  .hero-chip b { color: #ffca74; font: 700 21px Space Grotesk, sans-serif; margin-right: 5px; }
   @keyframes enter { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
   @keyframes pulse { 50% { transform: scale(.72); opacity: .65; } }
-  @media (max-width: 760px) { .agency-shell { display: block !important; } .agency-sidebar { position: relative; height: auto; width: 100% !important; min-height: auto !important; } .agency-nav { flex-direction: row !important; overflow-x: auto; padding-bottom: 4px; } .agency-nav button { flex: 0 0 auto; } .agency-profile { display: none; } .agency-content { padding: 18px 16px 32px !important; } .hero-grid { align-items: flex-start; flex-direction: column; } .agency-topbar { margin-bottom: 16px; } }
+  @media (max-width: 760px) { .agency-shell { display: block !important; } .agency-sidebar { position: relative; height: auto; width: 100% !important; min-height: auto !important; } .agency-nav { flex-direction: row !important; overflow-x: auto; padding-bottom: 4px; } .agency-nav button { flex: 0 0 auto; } .agency-profile { display: none; } .agency-content { padding: 18px 16px 32px !important; } .hero-grid { align-items: flex-start; flex-direction: column; } .agency-topbar { margin-bottom: 16px; } .responsive-dashboard-grid, .responsive-client-grid, .responsive-overview-grid, .responsive-team-grid, .responsive-report-grid { grid-template-columns: 1fr !important; } .responsive-table { overflow-x: auto; } .responsive-table > div { min-width: 650px; } }
 `;
 const AUTH_STYLES = `
   .auth-page { position: relative; min-height: 100vh; display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(370px, .8fr); overflow: hidden; background: #111428; color: #fff; }
@@ -54,10 +54,10 @@ const AUTH_STYLES = `
   .auth-page:before { width: 35rem; height: 35rem; top: -18rem; left: -12rem; background: radial-gradient(circle, rgba(251, 165, 75, .38), rgba(251, 165, 75, 0) 68%); animation: drift 10s ease-in-out infinite alternate; }
   .auth-page:after { width: 42rem; height: 42rem; bottom: -26rem; right: 20%; background: radial-gradient(circle, rgba(91, 111, 255, .38), rgba(91, 111, 255, 0) 67%); animation: drift 12s ease-in-out infinite alternate-reverse; }
   .auth-showcase { position: relative; z-index: 1; padding: clamp(32px, 5vw, 74px); display: flex; flex-direction: column; justify-content: space-between; border-right: 1px solid rgba(255,255,255,.1); }
-  .auth-brand { display: inline-flex; align-items: center; gap: 11px; font: 800 18px Sora, sans-serif; letter-spacing: -.04em; }
+  .auth-brand { display: inline-flex; align-items: center; gap: 11px; font: 700 18px Space Grotesk, sans-serif; letter-spacing: -.04em; }
   .auth-brand-logo { width: 42px; height: 42px; display: grid; place-items: center; border-radius: 14px; color: #171526; background: linear-gradient(135deg, #ffe084, #f59253); box-shadow: 0 12px 30px rgba(246, 159, 78, .28); }
   .auth-kicker { display: inline-flex; align-items: center; gap: 7px; color: #ffcb7b; font-size: 11px; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; }
-  .auth-headline { margin: 16px 0; max-width: 620px; font: 800 clamp(42px, 5.3vw, 74px)/.99 Sora, sans-serif; letter-spacing: -.075em; }
+  .auth-headline { margin: 16px 0; max-width: 620px; font: 700 clamp(42px, 5.3vw, 74px)/.99 Space Grotesk, sans-serif; letter-spacing: -.075em; }
   .auth-headline .gradient-text { background: linear-gradient(95deg, #fff 15%, #d5ccff 45%, #ffca7e 96%); background-clip: text; -webkit-background-clip: text; color: transparent; }
   .auth-copy { max-width: 480px; color: #b5b8cb; font-size: 15px; line-height: 1.65; }
   .auth-orbit { position: absolute; right: 7%; bottom: 11%; width: clamp(185px, 23vw, 310px); aspect-ratio: 1; border: 1px solid rgba(255,255,255,.13); border-radius: 50%; animation: spin 24s linear infinite; }
@@ -68,15 +68,13 @@ const AUTH_STYLES = `
   .proof-line { width: 40px; height: 1px; background: #ffbf67; }
   .auth-panel { position: relative; z-index: 2; display: grid; place-items: center; padding: 26px; background: linear-gradient(145deg, rgba(255,255,255,.1), rgba(255,255,255,.035)); backdrop-filter: blur(18px); }
   .auth-card { width: min(100%, 400px); padding: 33px; border: 1px solid rgba(255,255,255,.17); border-radius: 26px; background: rgba(24,27,51,.67); box-shadow: 0 28px 70px rgba(0,0,0,.31); animation: auth-in .65s cubic-bezier(.2,.8,.2,1) both; }
-  .auth-card-title { margin: 13px 0 7px; font: 800 25px Sora, sans-serif; letter-spacing: -.05em; }
+  .auth-card-title { margin: 13px 0 7px; font: 700 25px Space Grotesk, sans-serif; letter-spacing: -.05em; }
   .auth-field-label { display: block; color: #b4b7cc; font-size: 11.5px; font-weight: 700; margin: 16px 0 6px; }
-  .auth-input { width: 100%; color: #fff; background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.13); padding: 12px 13px; border-radius: 11px; outline: none; font: 13.5px Inter, sans-serif; }
+  .auth-input { width: 100%; color: #fff; background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.13); padding: 12px 13px; border-radius: 11px; outline: none; font: 13.5px Manrope, sans-serif; }
   .auth-input:focus { border-color: #ffc56c; box-shadow: 0 0 0 4px rgba(255,197,108,.12); }
   .auth-input::placeholder { color: #8589a1; }
-  .auth-submit { width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 8px; margin-top: 22px; padding: 12px; border: 0; border-radius: 11px; color: #282033; cursor: pointer; font: 800 13px Inter, sans-serif; background: linear-gradient(100deg, #ffd16d, #ee935d); box-shadow: 0 12px 25px rgba(235,147,75,.24); }
+  .auth-submit { width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 8px; margin-top: 22px; padding: 12px; border: 0; border-radius: 11px; color: #282033; cursor: pointer; font: 800 13px Manrope, sans-serif; background: linear-gradient(100deg, #ffd16d, #ee935d); box-shadow: 0 12px 25px rgba(235,147,75,.24); }
   .auth-submit:hover { box-shadow: 0 16px 32px rgba(235,147,75,.38); }
-  .auth-switch { width: 100%; border: 0; background: transparent; color: #bdbfd0; cursor: pointer; padding: 16px 0 0; font: 600 12.5px Inter, sans-serif; }
-  .auth-switch span { color: #ffca72; }
   .auth-secure { margin-top: 23px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,.1); color: #8186a1; font-size: 11px; text-align: center; }
   @keyframes drift { to { transform: translate(55px, 35px) scale(1.1); } }
   @keyframes spin { to { transform: rotate(360deg); } }
@@ -139,7 +137,7 @@ export default function Root() {
     return () => { active = false; };
   }, [session]);
 
-  if (loading) return <div style={{ padding: 40, fontFamily: "Inter" }}>Loading...</div>;
+  if (loading) return <div style={{ padding: 40, fontFamily: "Manrope" }}>Loading...</div>;
   if (!session) return <Login />;
   if (!profile) return <AccountSetup error={profileError} />;
 
@@ -148,10 +146,10 @@ export default function Root() {
 
 function AccountSetup({ error }) {
   return (
-    <div style={{ minHeight: "100vh", display: "grid", placeItems: "center", background: C.paper, padding: 24, fontFamily: "Inter, sans-serif" }}>
+    <div style={{ minHeight: "100vh", display: "grid", placeItems: "center", background: C.paper, padding: 24, fontFamily: "Manrope, sans-serif" }}>
       <style>{FONT}</style>
       <Card style={{ width: "min(440px, 100%)", padding: 26 }}>
-        <div style={{ fontFamily: "Sora", fontSize: 19, fontWeight: 700, marginBottom: 8 }}>Account setup is incomplete</div>
+        <div style={{ fontFamily: "Space Grotesk", fontSize: 19, fontWeight: 700, marginBottom: 8 }}>Account setup is incomplete</div>
         <div style={{ color: C.slate, fontSize: 13.5, lineHeight: 1.55 }}>
           {error || "Your login worked, but this user does not yet have a CRM profile."} Ask the admin to add your row in the <b>profiles</b> table and assign a role, then refresh.
         </div>
@@ -299,14 +297,14 @@ function App({ profile }) {
   async function updateLeaveStatus(id, status) { await supabase.from("leaves").update({ status }).eq("id", id); }
 
   return (
-    <div className="agency-shell" style={{ fontFamily: "Inter, sans-serif", color: C.ink, display: "flex" }}>
+    <div className="agency-shell" style={{ fontFamily: "Manrope, sans-serif", color: C.ink, display: "flex" }}>
       <style>{FONT}{APP_STYLES}</style>
 
       <div className="agency-sidebar" style={{ width: 254, color: "#fff", padding: "24px 16px", display: "flex", flexDirection: "column", flexShrink: 0, minHeight: "100vh" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "0 6px 22px" }}>
-          <div className="agency-brand-mark" style={{ width: 38, height: 38, borderRadius: 12, background: "linear-gradient(135deg, #FFC465, #E8843C)", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Sora", fontWeight: 800, color: C.ink }}>Y</div>
+          <div className="agency-brand-mark" style={{ width: 38, height: 38, borderRadius: 12, background: "linear-gradient(135deg, #FFC465, #E8843C)", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Space Grotesk", fontWeight: 700, color: C.ink }}>Y</div>
           <div>
-            <div style={{ fontFamily: "Sora", fontWeight: 800, fontSize: 16, lineHeight: 1.1, letterSpacing: "-.03em" }}>Yuzi</div>
+            <div style={{ fontFamily: "Space Grotesk", fontWeight: 700, fontSize: 16, lineHeight: 1.1, letterSpacing: "-.03em" }}>Yuzi</div>
             <div style={{ fontSize: 10.5, color: "#ABAEC2", letterSpacing: ".08em", textTransform: "uppercase", marginTop: 3 }}>Creative Studio</div>
           </div>
         </div>
@@ -372,14 +370,14 @@ function StatCard({ label, value, sub, tone }) {
   return (
     <Card style={{ padding: "18px 20px", flex: 1, minWidth: 150 }}>
       <div style={{ fontSize: 13, color: C.slate, fontWeight: 600 }}>{label}</div>
-      <div style={{ fontFamily: "Sora", fontSize: 30, fontWeight: 700, color: C.ink, marginTop: 4 }}>{value}</div>
+      <div style={{ fontFamily: "Space Grotesk", fontSize: 30, fontWeight: 700, color: C.ink, marginTop: 4 }}>{value}</div>
       {sub && <div style={{ fontSize: 12.5, color: tone === "red" ? C.red : C.slate, marginTop: 4, fontWeight: 600 }}>{sub}</div>}
     </Card>
   );
 }
 function SectionTitle({ children, action }) {
   return <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
-    <h2 style={{ fontFamily: "Sora", fontSize: 19, fontWeight: 700, color: C.ink, margin: 0 }}>{children}</h2>{action}
+    <h2 style={{ fontFamily: "Space Grotesk", fontSize: 19, fontWeight: 700, color: C.ink, margin: 0 }}>{children}</h2>{action}
   </div>;
 }
 function EmptyNote({ text }) { return <div style={{ color: C.slate, fontSize: 13, padding: "10px 0" }}>{text}</div>; }
@@ -435,7 +433,7 @@ function DashboardView({ role, clients, tasks, leads, overdue, blocked, pendingA
               ))}
             </Card>
           )}
-          <div style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: 18 }}>
+          <div className="responsive-dashboard-grid" style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: 18 }}>
             <Card style={{ padding: 18 }}>
               <div style={{ fontWeight: 700, marginBottom: 10, fontSize: 14.5 }}>Sales pipeline snapshot</div>
               {STAGES.map(s => {
@@ -529,7 +527,7 @@ function AddLeadModal({ onClose, onAdd, employees }) {
     <div style={{ position: "fixed", inset: 0, background: "rgba(20,20,25,0.4)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 50 }}>
       <Card style={{ width: 420, padding: 22 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
-          <div style={{ fontFamily: "Sora", fontWeight: 700, fontSize: 17 }}>Add a lead</div>
+          <div style={{ fontFamily: "Space Grotesk", fontWeight: 700, fontSize: 17 }}>Add a lead</div>
           <button onClick={onClose} style={{ border: "none", background: "none", cursor: "pointer" }}><X size={18} /></button>
         </div>
         <input placeholder="Contact name" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} style={input} />
@@ -555,14 +553,14 @@ function ClientsView({ clients, tasks, onOpen }) {
   return (
     <div>
       <SectionTitle>Clients</SectionTitle>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 14 }}>
+      <div className="responsive-client-grid" style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 14 }}>
         {clients.map(c => {
           const cTasks = tasks.filter(t => t.client_id === c.id);
           const overdueCount = cTasks.filter(isOverdue).length;
           return (
             <Card key={c.id} style={{ padding: 18, cursor: "pointer" }} onClick={() => onOpen(c)}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-                <div><div style={{ fontFamily: "Sora", fontWeight: 700, fontSize: 15.5 }}>{c.name}</div>
+                <div><div style={{ fontFamily: "Space Grotesk", fontWeight: 700, fontSize: 15.5 }}>{c.name}</div>
                   <div style={{ fontSize: 12.5, color: C.slate, marginTop: 3 }}>{(c.services || []).join(" · ")}</div></div>
                 <Pill tone={c.status === "Active" ? "teal" : c.status === "At Risk" ? "red" : "amber"}>{c.status}</Pill>
               </div>
@@ -593,14 +591,14 @@ function ClientProfile({ client, tasks, onBack }) {
       <button onClick={onBack} style={{ ...btnGhost, marginBottom: 14 }}>← Back to clients</button>
       <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 6 }}>
         <div style={{ width: 44, height: 44, borderRadius: 10, background: C.amberSoft, display: "flex", alignItems: "center", justifyContent: "center" }}><Building2 size={20} color="#8A5A16" /></div>
-        <div><div style={{ fontFamily: "Sora", fontWeight: 700, fontSize: 19 }}>{client.name}</div>
+        <div><div style={{ fontFamily: "Space Grotesk", fontWeight: 700, fontSize: 19 }}>{client.name}</div>
           <div style={{ fontSize: 12.5, color: C.slate }}>{(client.services || []).join(" · ")} · Manager: {client.account_manager}</div></div>
       </div>
       <div style={{ display: "flex", gap: 4, margin: "18px 0", borderBottom: `1px solid ${C.line}` }}>
         {tabs.map(t => <button key={t} onClick={() => setTab(t)} style={{ border: "none", background: "none", cursor: "pointer", padding: "8px 4px", marginRight: 18, fontWeight: 600, fontSize: 13.5, color: tab === t ? C.ink : C.slate, borderBottom: tab === t ? `2px solid ${C.amber}` : "2px solid transparent" }}>{t}</button>)}
       </div>
       {tab === "Overview" && (
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+        <div className="responsive-overview-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
           <Card style={{ padding: 16 }}><div style={{ fontWeight: 700, marginBottom: 8 }}>Details</div>
             <Row label="Status"><Pill tone={client.status === "Active" ? "teal" : "amber"}>{client.status}</Pill></Row>
             <Row label="Monthly value">₹{Number(client.monthly_value).toLocaleString("en-IN")}</Row>
@@ -635,7 +633,7 @@ function ProjectsView({ tasks, clients, updateTask, role, filterClient, setFilte
           </select>
         </div>
       )}
-      <Card style={{ padding: 4 }}>
+      <Card className="responsive-table" style={{ padding: 4 }}>
         <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr 1fr 1fr", padding: "10px 14px", fontSize: 11.5, fontWeight: 700, color: C.slate, borderBottom: `1px solid ${C.line}` }}>
           <span>TASK</span><span>CLIENT</span><span>STAGE</span><span>ASSIGNEE</span><span>DUE</span><span>STATUS</span></div>
         {filtered.map(t => (
@@ -718,7 +716,7 @@ function TeamView({ tasks, leaves, employees }) {
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>{onLeaveToday.map(l => <Pill key={l.id} tone="amber">{l.employee} · {l.type}</Pill>)}</div>
         </Card>
       )}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 14 }}>
+      <div className="responsive-team-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 14 }}>
         {employees.map(emp => {
           const t = tasks.filter(x => x.assignee === emp);
           const overdueCount = t.filter(isOverdue).length;
@@ -771,7 +769,7 @@ function LeaveView({ role, me, leaves, addLeave, updateLeaveStatus, employees })
         </>
       )}
       <div style={{ fontWeight: 700, fontSize: 14.5, marginBottom: 10 }}>{isEmployee ? "Team leave calendar" : "All employee leave"}</div>
-      <Card style={{ padding: 4 }}>
+      <Card className="responsive-table" style={{ padding: 4 }}>
         <div style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr 1.4fr 1.6fr 1fr 1fr", padding: "10px 14px", fontSize: 11.5, fontWeight: 700, color: C.slate, borderBottom: `1px solid ${C.line}` }}>
           <span>EMPLOYEE</span><span>TYPE</span><span>DATES</span><span>REASON</span><span>APPLIED BY</span><span>STATUS</span></div>
         {leaves.map(l => (
@@ -799,7 +797,7 @@ function AddLeaveModal({ isEmployee, me, employees, onClose, onAdd }) {
     <div style={{ position: "fixed", inset: 0, background: "rgba(20,20,25,0.4)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 50 }}>
       <Card style={{ width: 420, padding: 22 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
-          <div style={{ fontFamily: "Sora", fontWeight: 700, fontSize: 17 }}>{isEmployee ? "Apply for leave" : "Add leave for employee"}</div>
+          <div style={{ fontFamily: "Space Grotesk", fontWeight: 700, fontSize: 17 }}>{isEmployee ? "Apply for leave" : "Add leave for employee"}</div>
           <button onClick={onClose} style={{ border: "none", background: "none", cursor: "pointer" }}><X size={18} /></button>
         </div>
         {!isEmployee && <select value={form.employee} onChange={e => setForm({ ...form, employee: e.target.value })} style={input}>{employees.map(e => <option key={e}>{e}</option>)}</select>}
@@ -839,7 +837,7 @@ function ReportsView({ leads, tasks, clients }) {
           {matchedClients.length + matchedTasks.length === 0 && <EmptyNote text="No matches." />}
         </Card>
       )}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 14, marginBottom: 20 }}>
+      <div className="responsive-report-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 14, marginBottom: 20 }}>
         <StatCard label="Lead conversion" value={`${conversion}%`} />
         <StatCard label="Won value" value={`₹${wonValue.toLocaleString("en-IN")}`} />
         <StatCard label="Delayed tasks" value={tasks.filter(isOverdue).length} tone="red" />
@@ -865,9 +863,9 @@ function FilesView({ client }) {
   );
 }
 
-const input = { width: "100%", padding: "9px 11px", borderRadius: 8, border: `1px solid ${C.line}`, marginBottom: 9, fontSize: 13.5, fontFamily: "Inter", boxSizing: "border-box" };
-const miniSelect = { border: `1px solid ${C.line}`, borderRadius: 6, padding: "4px 6px", fontSize: 12.5, fontFamily: "Inter", background: C.card };
-const btnBase = { display: "inline-flex", alignItems: "center", gap: 5, border: "none", borderRadius: 8, padding: "7px 12px", fontSize: 12.5, fontWeight: 700, cursor: "pointer", fontFamily: "Inter" };
+const input = { width: "100%", padding: "9px 11px", borderRadius: 8, border: `1px solid ${C.line}`, marginBottom: 9, fontSize: 13.5, fontFamily: "Manrope", boxSizing: "border-box" };
+const miniSelect = { border: `1px solid ${C.line}`, borderRadius: 6, padding: "4px 6px", fontSize: 12.5, fontFamily: "Manrope", background: C.card };
+const btnBase = { display: "inline-flex", alignItems: "center", gap: 5, border: "none", borderRadius: 8, padding: "7px 12px", fontSize: 12.5, fontWeight: 700, cursor: "pointer", fontFamily: "Manrope" };
 const btnAmber = { ...btnBase, background: C.amber, color: "#3A2708" };
 const btnTeal = { ...btnBase, background: C.teal, color: "#fff" };
 const btnGhost = { ...btnBase, background: C.slateSoft, color: C.ink };
